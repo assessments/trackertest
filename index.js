@@ -3,8 +3,8 @@ function Tracker() {
 	this.url = '';
 
 	this.submit = function () {
-		url = document.getElementById('url').value;
-		console.log(url);
+		this.url = document.getElementById('url').value;
+		console.log(this.url);
 	};
 
 	this.load = function () {
@@ -25,14 +25,13 @@ function Tracker() {
 
 		request.send();
 	}
+
+	document.getElementById('submit-url').addEventListener('click', this.submit.bind(this), false);
 }
 
 document.addEventListener('DOMContentLoaded', function(){
 
 	//instantiate the tracker class
 	var tracker = new Tracker();
-
-	//attach event handler to the submit button
-	document.getElementById('submit-url').addEventListener('click', tracker.submit, false);
 
 });
