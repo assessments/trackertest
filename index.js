@@ -4,12 +4,15 @@ function Tracker() {
 
 	this.submit = function () {
 		this.url = document.getElementById('url').value;
-		console.log(this.url);
+		
+		this.load();
 	};
 
 	this.load = function () {
-		request = new XMLHttpRequest();
-		request.open('GET', 'tracker.php', true);
+
+		var request = new XMLHttpRequest();
+		request.open('POST', 'tracker.php', true);
+		request.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8');
 
 		request.onload = function() {
 			if (request.status >= 200 && request.status < 400){
@@ -23,7 +26,7 @@ function Tracker() {
 			console.log('connection error');
 		};
 
-		request.send();
+		request.send('url='+this.url);
 	}
 
 	document.getElementById('submit-url').addEventListener('click', this.submit.bind(this), false);
