@@ -29,6 +29,7 @@ class Tracker {
 
         $count = 0;
 
+        //use XMLReader API to read a continous stream rather than loading the entire XML tree into memory
         $parser = new XMLReader;
         $parser->open('temp.xml');
 
@@ -38,6 +39,7 @@ class Tracker {
         // iterate each product
         while ($parser->name === 'product')
         {
+            //use SimpleXML to parse each product node because the API is easier
             $item = new SimpleXMLElement($parser->readOuterXML());
 
             $id = $item->productID;
@@ -86,13 +88,12 @@ class Tracker {
             'count' => $this->response,
             'errors' => ''
         ];
-        return json_encode($response); 
+        echo json_encode($response); 
     }
 }
 
 $url = urldecode($_POST["url"]);
-//$url = 'http://pf.tradetracker.net/?aid=1&type=xml&encoding=utf-8&fid=567342&categoryType=2&additionalType=2&limit=10'; //&limit=10
+
 $tracker = new Tracker($url);
 $tracker->fetch();
-
-echo $tracker->response();
+$tracker->response();
