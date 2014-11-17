@@ -6,22 +6,24 @@ set_time_limit(0);
 class Tracker {
 
     private $url;
-    private $response;
+    private $response = null;
+    private $errors = [];
 
     public function __construct($url) {
         $this->url = $url;
-        $this->response = null;
     }
 
     public function fetch() {
-
         $fp = fopen ('temp.xml', 'w+');
         $curl = curl_init($this->url);
         curl_setopt($curl, CURLOPT_FILE, $fp);
         curl_exec($curl);
+        if (curl_errno($curl))
+        {
+            array_push($this->errors, curl_error($curl));
+        }
         curl_close($curl);
         fclose($fp);
-
         $this->parse();
     }
 
@@ -86,7 +88,7 @@ class Tracker {
     public function response() {
         $response = (object)[
             'count' => $this->response,
-            'errors' => ''
+            'errors' => $this->errors
         ];
         echo json_encode($response); 
     }
