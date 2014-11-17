@@ -15,7 +15,11 @@ class Tracker {
     }
 
     public function fetch() {
-        $fp = fopen ('temp.xml', 'w+');
+    	//delete all existing product files in the products directory
+    	array_map('unlink', glob("products/*"));
+
+    	//download the requested url
+        $fp = fopen ('download.xml', 'w+');
         $curl = curl_init($this->url);
         curl_setopt($curl, CURLOPT_FILE, $fp);
         curl_exec($curl);
@@ -29,12 +33,11 @@ class Tracker {
     }
 
     public function parse() {
-
         $count = 0;
 
         //use XMLReader API to read a continous stream rather than loading the entire XML tree into memory
         $parser = new XMLReader;
-        $parser->open('temp.xml');
+        $parser->open('download.xml');
 
         //move to the first product node
         while ($parser->read() && $parser->name !== 'product');
