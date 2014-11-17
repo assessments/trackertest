@@ -5,15 +5,28 @@ ini_set("memory_limit","32M"); //enforce the memory constraint requirement
 set_time_limit(0); //allow long execution time for huge XML files
 libxml_use_internal_errors(true); //suppress libXML errors so they can be handled explicitly
 
+/**
+ * Tracker class
+ */
+
 class Tracker {
+
+    /**
+     * Models
+     */
 
     private $url;
     private $response = null;
     private $errors = [];
 
+    //constructor
     public function __construct($url) {
         $this->url = $url;
     }
+
+    /**
+     * Controllers
+     */ 
 
     public function fetch() {
     	//delete all existing product files in the products directory
@@ -84,6 +97,7 @@ class Tracker {
             URL: [PRODUCT_URL]
         */
 
+        //construct the product file
         $content = 'Product: '.$name.' ('.$id.')'.PHP_EOL;
         $content .= 'Description: '.$description.PHP_EOL;
         $content .= 'Price: '.$currency.' '.$price.PHP_EOL;
@@ -95,8 +109,15 @@ class Tracker {
         $content .= PHP_EOL;
         $content .= 'URL: '.$url.PHP_EOL;
 
+        //write the product file
         file_put_contents('products/'.$id.'.txt', $content);
     }
+
+    /**
+     * Views
+     *
+     * In this case, just JSON
+     */
 
     public function response() {
         $response = (object)[

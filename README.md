@@ -27,8 +27,10 @@ http://pf.tradetracker.net/?aid=1&type=xml&encoding=utf-8&fid=567342&categoryTyp
 Concepts illustrated
 --------------------
 
-- pure JavaScript solution (no jQuery or other framework)
+- pure JavaScript solution on the client-side (no jQuery or other framework)
 - separation of concerns through basic MVC structure (client-side and server-side)
+- object-oriented PHP and JavaScript
 - JSON response with client-side rendering
 - URL encoding
-- XML parsing
+- XML download and parsing in chunks to limit memory use
+- HTML escaping (security)
