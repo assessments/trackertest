@@ -71,7 +71,7 @@ class Tracker {
             foreach ($categories as $category) {
                 $content .= $category.', ';
             }
-            //$content = rtrim($content, ",");
+            $content = rtrim($content, ", ");
             $content .= PHP_EOL;
             $content .= 'URL: '.$url.PHP_EOL;
 
