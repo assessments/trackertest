@@ -1,14 +1,40 @@
 /**
+ * Helpers
+ */
+
+var entityMap = {
+  "&": "&amp;",
+  "<": "&lt;",
+  ">": "&gt;",
+  '"': '&quot;',
+  "'": '&#39;',
+  "/": '&#x2F;'
+};
+
+//the moustache.js solution for escaping HTML
+function escapeHtml(string) {
+    if (string === null) {
+        return '';
+    } else {
+        return String(string).replace(/[&<>"'\/]/g, function (s) {
+            return entityMap[s];
+        });
+    }
+};
+
+/**
  * Tracker class
  */
 
-function Tracker() {
+function Tracker(serverUrl, submitBtn, urlInput) {
 
     /**
      * Models
      */
 
-    this.url = '';
+    this.requestUrl = '';
+
+    this.serverUrl = serverUrl;
 
     this.response = {};
 
@@ -18,7 +44,7 @@ function Tracker() {
 
     //the submit method is an event handler
     this.submit = function () {
-        this.url = document.getElementById('url').value;
+        this.requestUrl = document.getElementById(urlInput).value;
         this.load();
     };
 
@@ -27,7 +53,7 @@ function Tracker() {
 
         var self = this;
         var request = new XMLHttpRequest();
-        request.open('POST', 'tracker.php', true);
+        request.open('POST', this.serverUrl, true);
         request.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8');
 
         request.onload = function () {
@@ -44,11 +70,11 @@ function Tracker() {
             self.draw();
         };
 
-        request.send('url='+encodeURIComponent(this.url));
+        request.send('url='+encodeURIComponent(this.requestUrl));
     }
 
     //add an event handler for the submit button
-    document.getElementById('submit-url').addEventListener('click', this.submit.bind(this), false);
+    document.getElementById(submitBtn).addEventListener('click', this.submit.bind(this), false);
 
     /**
      * Views
@@ -64,7 +90,7 @@ function Tracker() {
         } else if (this.response.errors.length > 0) {
             html[++i] = '<div class="error">';
             this.response.errors.forEach(function (error) {
-                html[++i] = '<p>'+error+'</p>';
+                html[++i] = '<p>'+escapeHtml(error)+'</p>';
             }, this);
             html[++i] = '</div>';
         }
@@ -72,9 +98,9 @@ function Tracker() {
     }
 }
 
-document.addEventListener('DOMContentLoaded', function (){
+document.addEventListener('DOMContentLoaded', function () {
 
     //instantiate the tracker class
-    var tracker = new Tracker();
+    var tracker = new Tracker('tracker.php', 'submit-url', 'url');
 
 });
