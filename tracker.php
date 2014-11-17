@@ -2,6 +2,7 @@
 
 ini_set("memory_limit","32M"); //enforce the memory constraint for this script
 set_time_limit(0);
+libxml_use_internal_errors(true); //http://php.net/manual/en/simplexml.examples-errors.php
 
 class Tracker {
 
@@ -46,6 +47,10 @@ class Tracker {
             $count++;
         }
 
+        foreach(libxml_get_errors() as $error) {
+            array_push($this->errors, $error->message);
+        }
+
         $this->response = $count;
     }
 
@@ -84,7 +89,7 @@ class Tracker {
         $content .= PHP_EOL;
         $content .= 'URL: '.$url.PHP_EOL;
 
-       file_put_contents('products/'.$id.'.txt', $content);
+        file_put_contents('products/'.$id.'.txt', $content);
     }
 
     public function response() {
