@@ -85,14 +85,14 @@ function Tracker(serverUrl, submitBtn, urlInput) {
     //the draw method renders the response to the page
     this.draw = function () {
         var html = [], i = -1;
-        if (this.response.count) {
-            html[++i] = '<div class="success">Success: '+this.response.count+' products tracked</div>';
-        } else if (this.response.errors.length > 0) {
+		if (this.response.errors.length > 0) {
             html[++i] = '<div class="error">';
             this.response.errors.forEach(function (error) {
                 html[++i] = '<p>'+escapeHtml(error)+'</p>';
             }, this);
             html[++i] = '</div>';
+        } else if (this.response.count !== null) {
+            html[++i] = '<div class="success">Success: '+this.response.count+' products tracked</div>';
         }
         document.getElementById('response').innerHTML = html.join('');
     }
