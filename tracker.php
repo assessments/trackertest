@@ -1,8 +1,9 @@
 <?php
 
-ini_set("memory_limit","32M"); //enforce the memory constraint for this script
-set_time_limit(0);
-libxml_use_internal_errors(true); //http://php.net/manual/en/simplexml.examples-errors.php
+error_reporting(E_STRICT); //enforce E_STRICT requirement
+ini_set("memory_limit","32M"); //enforce the memory constraint requirement
+set_time_limit(0); //allow long execution time for huge XML files
+libxml_use_internal_errors(true); //suppress libXML errors so they can be handled explicitly
 
 class Tracker {
 
@@ -74,6 +75,8 @@ class Tracker {
         }
 
         /*
+        	Output file requirement:
+
             Product: [PRODUCT_NAME] ([PRODUCT_ID])
             Description: [PRODUCT_DESCRIPTION]
             Price: [PRODUCT_CURRENCY] [PRODUCT_PRICE]
