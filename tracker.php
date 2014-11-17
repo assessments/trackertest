@@ -35,54 +35,56 @@ class Tracker {
         $parser = new XMLReader;
         $parser->open('temp.xml');
 
-        // move to the first product node
+        //move to the first product node
         while ($parser->read() && $parser->name !== 'product');
 
-        // iterate each product
+        //iterate each product
         while ($parser->name === 'product')
         {
-            //use SimpleXML to parse each product node because the API is easier
-            $item = new SimpleXMLElement($parser->readOuterXML());
-
-            $id = $item->productID;
-            $name = $item->name;
-            $description = $item->description;
-            $price = $item->price;
-            $currency = $item->price['currency'];
-            $url = $item->productURL;
-            $categories = [];
-
-            foreach($item->categories as $category) {
-                array_push($categories, $category->category);
-            }
-
-            /*
-                Product: [PRODUCT_NAME] ([PRODUCT_ID])
-                Description: [PRODUCT_DESCRIPTION]
-                Price: [PRODUCT_CURRENCY] [PRODUCT_PRICE]
-                Categories: [PRODUCT_CATEGORY][,][PRODUCT_CATEGORY][...]
-                URL: [PRODUCT_URL]
-            */
-
-            $content = 'Product: '.$name.' ('.$id.')'.PHP_EOL;
-            $content .= 'Description: '.$description.PHP_EOL;
-            $content .= 'Price: '.$currency.' '.$price.PHP_EOL;
-            $content .= 'Categories: ';
-            foreach ($categories as $category) {
-                $content .= $category.', ';
-            }
-            $content = rtrim($content, ", ");
-            $content .= PHP_EOL;
-            $content .= 'URL: '.$url.PHP_EOL;
-
-            // go to next product
+            $product = $this->parseNode($parser->readOuterXML());
             $parser->next('product');
             $count++;
-
-            file_put_contents('products/'.$id.'.txt', $content);
         }
 
         $this->response = $count;
+    }
+
+    public function parseNode($node) {
+        //use SimpleXML to parse each product node because the API is easier
+        $item = new SimpleXMLElement($node);
+
+        $id = $item->productID;
+        $name = $item->name;
+        $description = $item->description;
+        $price = $item->price;
+        $currency = $item->price['currency'];
+        $url = $item->productURL;
+        $categories = [];
+
+        foreach($item->categories as $category) {
+            array_push($categories, $category->category);
+        }
+
+        /*
+            Product: [PRODUCT_NAME] ([PRODUCT_ID])
+            Description: [PRODUCT_DESCRIPTION]
+            Price: [PRODUCT_CURRENCY] [PRODUCT_PRICE]
+            Categories: [PRODUCT_CATEGORY][,][PRODUCT_CATEGORY][...]
+            URL: [PRODUCT_URL]
+        */
+
+        $content = 'Product: '.$name.' ('.$id.')'.PHP_EOL;
+        $content .= 'Description: '.$description.PHP_EOL;
+        $content .= 'Price: '.$currency.' '.$price.PHP_EOL;
+        $content .= 'Categories: ';
+        foreach ($categories as $category) {
+            $content .= $category.', ';
+        }
+        $content = rtrim($content, ", ");
+        $content .= PHP_EOL;
+        $content .= 'URL: '.$url.PHP_EOL;
+
+       file_put_contents('products/'.$id.'.txt', $content);
     }
 
     public function response() {
